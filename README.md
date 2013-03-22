@@ -18,6 +18,6 @@ Completed
 ---------
 .\relay [local port] [remote host] [remote port]
 
-This wil create a UDP relay from your local machine to the server desired. This is for testing purposes, and can be used to sniff / modify packets before they hit the NIC.
+This will create a UDP relay from your local machine to the server desired. This is for testing purposes, and can be used to sniff / modify packets before they hit the NIC.
 
 

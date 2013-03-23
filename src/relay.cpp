@@ -14,7 +14,7 @@ int main(int argc, char* argv[])
   {
     if (argc != 4)
     {
-      std::cerr << "Usage: boost3rdparty <local port> <remote host> <remote port>\n";
+      std::cerr << "Usage: relay <local port> <remote host> <remote port>\n";
       return 1;
     }
 

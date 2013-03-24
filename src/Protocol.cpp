@@ -1,7 +1,22 @@
+/*
+Copyright (c) Lensman 2012-2013.
 
+This file is part of libbasnet.
+
+libbasnet is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+libbasnet is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with libbasnet.  If not, see <http://www.gnu.org/licenses/>.
+*/
 #include "libbasnet/basnet.hpp"
-
-
 
 namespace aosnet{
 
@@ -11,11 +26,15 @@ namespace aosnet{
 
 		connections[tag] = ( pConnection( (aosnet::IConnection*) new Connection() ) );
 
+		connections[tag]->setHost( 0 );
+		connections[tag]->setPort( 32887 );
+		connections[tag]->setVersion( 4 );
+
 		fPS onDisconnectCallback = boost::bind( &IConnection::onDisconnect , connections[tag], _1 );
 		fPS onRecvCallback = boost::bind( &IConnection::onRecv , connections[tag], _1);
 
 		transports[tag] = ( pTransport( 
-					(aosnet::Transport::ITransport*)new aosnet::Transport::Dummy::Transport(
+					(aosnet::Transport::ITransport*)new aosnet::Transport::ENET::Transport(
 					onDisconnectCallback
 					, onRecvCallback
 				)

@@ -16,23 +16,25 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with libbasnet.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef ICONNECTION_HPP
-#define ICONNECTION_HPP
+#ifndef ILISTENER_HPP
+#define ILISTENER_HPP
 #include "stdint.h"
 
-#include "libbasnet/types.hpp"
-
-namespace aosnet{
-	class IConnection
+namespace basnet{
+	class IListener
 	{
 	public:
-		virtual ~IConnection(void){};
+		virtual ~IListener(void){};
 
 		/* These member functions will be called by ITransport */
-		virtual uint32_t getHost(void) =0;
-		virtual uint32_t getPort(void) =0;
-		virtual uint32_t getVersion(void) =0;
+		virtual void onDisconnect(std::string) = 0;
+		virtual void onRecv(std::string) = 0;
+		virtual void onConnect(std::string) = 0;
+		virtual void onError(std::string) = 0;
+
+	protected:
+
 	};
 }
 
-#endif //ICONNECTION_HPP
+#endif //ILISTENER_HPP

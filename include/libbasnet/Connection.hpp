@@ -31,22 +31,12 @@ namespace aosnet
 		uint32_t version;
 		bool isConnected;
 	public:
-		Connection::Connection();
+		Connection::Connection(uint32_t h, uint32_t p, uint32_t v );
 		Connection::~Connection();
 
-		bool connect(uint32_t host, uint32_t port, uint32_t version );
-		void send(Data * data, uint32_t length);
-		
 		uint32_t getHost(void);
 		uint32_t getPort(void);
 		uint32_t getVersion(void);
-
-		void onDisconnect(std::string tag);
-		void onRecv(std::string message);
-	protected:
-		void Connection::setHost(uint32_t);
-		void Connection::setPort(uint32_t);
-		void Connection::setVersion(uint32_t);
 	};
 }
 #endif // CONNECTION_HPP

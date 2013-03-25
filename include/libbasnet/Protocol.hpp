@@ -18,10 +18,13 @@ along with libbasnet.  If not, see <http://www.gnu.org/licenses/>.
 */
 #ifndef PROTOCOL_HPP
 #define PROTOCOL_HPP
+#include <boost/uuid/uuid.hpp>   
+#include "libbasnet/IListener.hpp"
 #include "libbasnet/IConnection.hpp"
 #include "libbasnet/ITransport.hpp"
-#include "stdint.h"
 
+#include "stdint.h"
+ 
 
 namespace aosnet
 {
@@ -40,8 +43,8 @@ namespace aosnet
 		std::map<std::string, pTransport> transports;
 
     public:
-		void Protocol::deleteTransport( char * tag);
-		Protocol::Protocol( char * tag );
+		void Protocol::deleteTransport( char *);
+		Protocol::Protocol( boost::uuids::uuid, basnet::IListener * );
 		Protocol::~Protocol();
 		uint32_t Protocol::getTransportCount();
 

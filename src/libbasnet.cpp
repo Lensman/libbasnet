@@ -17,16 +17,38 @@ You should have received a copy of the GNU General Public License
 along with libbasnet.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "libbasnet/basnet.hpp"
+#include "libbasnet/IListener.hpp"
+
+#include <boost/uuid/uuid.hpp>            
+#include <boost/uuid/uuid_generators.hpp> 
+#include <boost/uuid/uuid_io.hpp>    
+#pragma warning(disable:4996)
 
 namespace aosnet{
 	namespace Factory{
 		Protocol *p;
 
-		extern void DLL_EXPORT startProtocol(char* tag){
-			p = new Protocol(tag);
+		extern void DLL_EXPORT startProtocol( basnet::IListener* interestedParty )
+		{
+			if ( p == nullptr )
+				p = new Protocol(boost::uuids::random_generator()(), interestedParty);	
 		}
-		extern void DLL_EXPORT stopProtocol(char* tag){
-			delete p;
+
+		extern void DLL_EXPORT startVanillaProtocol( basnet::IListener* interestedParty )
+		{
+			if ( p == nullptr )
+				p = new Protocol(boost::uuids::random_generator()(), interestedParty);	
+		}
+
+		extern void DLL_EXPORT stopProtocol()
+		{
+			if ( p != nullptr )
+				delete p;
+		}
+
+		extern void DLL_EXPORT registerListener( basnet::IListener* interestedParty )
+		{
+			 interestedParty->onRecv( std::string( "you want?" ) );
 		}
 	}
 }

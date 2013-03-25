@@ -17,21 +17,23 @@ You should have received a copy of the GNU General Public License
 along with libbasnet.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "libbasnet/basnet.hpp"
+#include "libbasnet/IListener.hpp"
+
+#include <boost/uuid/uuid.hpp>            
+#include <boost/uuid/uuid_io.hpp>         
 
 namespace aosnet{
 
-	Protocol::Protocol( char* tag )
+	Protocol::Protocol( boost::uuids::uuid uuid, basnet::IListener * listener )
 	{
-		LOG(Log::logDEBUG4) << "NEW PROTOCOL STARTED" << tag;
 
-		connections[tag] = ( pConnection( (aosnet::IConnection*) new Connection() ) );
+		LOG(Log::logDEBUG4) << "NEW PROTOCOL STARTED:" << uuid;
+		std::string tag = boost::uuids::to_string(uuid);
+	
+		connections[tag] = ( pConnection( (aosnet::IConnection*) new Connection(0, 32887, 4) ) );
 
-		connections[tag]->setHost( 0 );
-		connections[tag]->setPort( 32887 );
-		connections[tag]->setVersion( 4 );
-
-		fPS onDisconnectCallback = boost::bind( &IConnection::onDisconnect , connections[tag], _1 );
-		fPS onRecvCallback = boost::bind( &IConnection::onRecv , connections[tag], _1);
+		fPS onDisconnectCallback = boost::bind( &basnet::IListener::onDisconnect , listener, _1 );
+		fPS onRecvCallback = boost::bind( &basnet::IListener::onRecv , listener, _1);
 
 		transports[tag] = ( pTransport( 
 					(aosnet::Transport::ITransport*)new aosnet::Transport::ENET::Transport(
@@ -40,7 +42,8 @@ namespace aosnet{
 				)
 			)
 		);
-		transports[tag]->connect(connections[tag]);
+		
+		transports[tag]->connect(connections[tag] );
 		
 	}
 
@@ -49,15 +52,14 @@ namespace aosnet{
 		LOG(Log::logDEBUG) << "Protocol REMOVED";
 	}
 
+	/* not impl yet */
     boost::shared_ptr<aosnet::IConnection> Protocol::getContext()
     {
-		LOG(Log::logDEBUG) << "NEW CONTEXT ADDED";
-		boost::shared_ptr<aosnet::IConnection> p( (aosnet::IConnection*)new Connection() );
-		
-        return p;
+        return nullptr;
     }
 
-	uint32_t Protocol::getTransportCount(){
+	uint32_t Protocol::getTransportCount()
+	{
 		return transports.size();
 	}
 
@@ -73,9 +75,7 @@ namespace aosnet{
 		{
 			LOG(Log::logDEBUG)  << "Deleting transport " << itr->first; 
 			itr->second->close();
-	
-			itr = transports.erase(itr);
-			//++itr;
+			itr = transports.erase( itr );
 		}
 	}
 
@@ -87,10 +87,8 @@ namespace aosnet{
 			if(itr->first == tag ){
 				
 				itr = transports.erase(itr);
-
 				LOG(Log::logDEBUG)  << "closing " << tag 
 					<< " from map now : " << transports.size();
-			
 			}
 			else
 			++itr;

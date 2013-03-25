@@ -17,10 +17,13 @@ You should have received a copy of the GNU General Public License
 along with libbasnet.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "libbasnet/basnet.hpp"
+#include "libbasnet/IListener.hpp"
 
 namespace aosnet{
-	namespace Factory{
-		extern void DLL_IMPORT startProtocol(char *);
-		extern void DLL_IMPORT stopProtocol(char *);
+	namespace Factory
+	{
+		extern void DLL_IMPORT startProtocol( basnet::IListener* );
+		extern void DLL_IMPORT startVanillaProtocol( basnet::IListener* );
+		extern void DLL_IMPORT stopProtocol();
 	}
 }

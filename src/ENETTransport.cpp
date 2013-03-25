@@ -95,13 +95,21 @@ namespace aosnet
 					case ENET_EVENT_TYPE_CONNECT:
 					{
 						char buf[64];
-						sprintf(buf,"%u:%u",event.peer -> address.host, event.peer -> address.port);
-						int buflen=strlen(buf);
+						sprintf_s(buf,"%u:%u", event.peer -> address.host, event.peer -> address.port);
+						size_t buflen=strlen(buf);
 						event.peer -> data=malloc(buflen+1);
-						strncpy((char*)event.peer -> data,buf,buflen);
+
+						// Quiet compiler, I'll deal with this later....
+						#pragma warning( push )
+						#pragma warning( disable : 4996 )
+						// your code that uses strncpy instead of strncpy_s
+						strncpy( (char*)event.peer->data, buf, buflen);
+						#pragma warning( pop ) 
+
 						peer=event.peer;
-						LOG(Log::logDEBUG) << "ENET connection established : "
-								<< &event.peer->data;
+						LOG(Log::logDEBUG) 
+							<< "ENET connection established : "	<< &event.peer->host
+							<< " on address: " << &event.peer->address;
 						break;
 					}
 					case ENET_EVENT_TYPE_RECEIVE:
